@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, X, Send, User, Mail } from "lucide-react";
+import { MessageCircle, X, Send, User, Mail, HelpCircle } from "lucide-react";
 
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
@@ -11,10 +11,13 @@ export default function ChatWidget() {
   const [formData, setFormData] = useState({ name: "", email: "" });
   const [sessionId, setSessionId] = useState<number | null>(null);
   const [messages, setMessages] = useState<any[]>([]);
+  const [faqs, setFaqs] = useState<{ id: number; question: string }[]>([]);
   const [reply, setReply] = useState("");
   const [loading, setLoading] = useState(false);
+  
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
+  const router = useRouter();
 
   // Restore session from localStorage on mount
   useEffect(() => {
@@ -23,6 +26,11 @@ export default function ChatWidget() {
       setSessionId(parseInt(savedSession));
       setStep("chat");
     }
+    
+    // Fetch FAQs
+    fetch("/api/chat/faq").then(res => res.json()).then(data => {
+      if (Array.isArray(data)) setFaqs(data);
+    }).catch(() => {});
   }, []);
 
   const fetchMessages = async (sid: number) => {
@@ -67,24 +75,27 @@ export default function ChatWidget() {
     setLoading(false);
   };
 
-  const handleSendMessage = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!reply.trim() || !sessionId) return;
-
-    const msg = reply;
-    setReply("");
+  const sendSpecificMessage = async (msgText: string) => {
+    if (!msgText.trim() || !sessionId) return;
     
     // Optimistic update
-    setMessages([...messages, { id: Date.now(), senderRole: "student", message: msg, createdAt: new Date() }]);
+    setMessages([...messages, { id: Date.now(), senderRole: "student", message: msgText, createdAt: new Date() }]);
 
     try {
       await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sessionId, message: msg }),
+        body: JSON.stringify({ sessionId, message: msgText }),
       });
       fetchMessages(sessionId);
     } catch (err) {}
+  };
+
+  const handleSendMessage = (e: React.FormEvent) => {
+    e.preventDefault();
+    const msg = reply;
+    setReply("");
+    sendSpecificMessage(msg);
   };
 
   if (pathname?.startsWith('/admin')) {
@@ -122,18 +133,18 @@ export default function ChatWidget() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            className="fixed bottom-24 right-6 z-50 w-[360px] h-[500px] max-w-[calc(100vw-3rem)] max-h-[calc(100vh-8rem)] bg-white rounded-2xl shadow-2xl shadow-slate-300/50 border border-slate-100 flex flex-col overflow-hidden"
+            className="fixed bottom-24 right-6 z-50 w-[360px] h-[550px] max-w-[calc(100vw-3rem)] max-h-[calc(100vh-8rem)] bg-white rounded-2xl shadow-2xl shadow-slate-300/50 border border-slate-100 flex flex-col overflow-hidden"
           >
             {/* Header */}
-            <div className="bg-gradient-to-r from-italy-green to-emerald-600 px-5 py-4 shrink-0">
+            <div className="bg-gradient-to-r from-italy-green to-emerald-600 px-5 py-4 shrink-0 shadow-sm z-10">
               <h3 className="text-white font-semibold text-sm">Live Support</h3>
               <p className="text-emerald-100 text-xs mt-0.5">We reply instantly</p>
             </div>
 
             {/* Body */}
             {step === "form" ? (
-              <div className="p-5 flex-1 overflow-y-auto flex flex-col justify-center">
-                <form onSubmit={handleStartSession} className="space-y-4">
+              <div className="p-5 flex-1 overflow-y-auto flex flex-col justify-center bg-slate-50">
+                <form onSubmit={handleStartSession} className="space-y-4 bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
                   <p className="text-sm text-slate-600 mb-2 text-center">Please enter your details to start chatting.</p>
                   <div>
                     <label className="flex items-center gap-1.5 text-xs font-medium text-slate-600 mb-1.5">
@@ -154,13 +165,30 @@ export default function ChatWidget() {
               </div>
             ) : (
               <>
-                <div className="flex-1 p-5 overflow-y-auto space-y-3 bg-slate-50/50">
+                <div className="flex-1 p-5 overflow-y-auto space-y-4 bg-slate-50/50 flex flex-col">
                   {messages.map((m) => {
                     const isStudent = m.senderRole === "student";
+                    
+                    // Handle special redirect command from bot
+                    if (m.message.startsWith('__REDIRECT__/')) {
+                      const redirectUrl = m.message.replace('__REDIRECT__', '');
+                      return (
+                        <div key={m.id} className="flex flex-col items-start w-full">
+                          <div className="text-[10px] text-slate-400 mb-1 uppercase font-semibold ml-1 flex items-center gap-1">🤖 Agent</div>
+                          <div className="px-4 py-3 rounded-2xl max-w-[85%] text-sm shadow-sm bg-white border border-slate-200 text-slate-700 rounded-tl-sm w-full">
+                            <p className="mb-3 font-medium">Here are our available courses! Let me take you there.</p>
+                            <button onClick={() => { setIsOpen(false); router.push(redirectUrl); }} className="w-full py-2 bg-italy-green text-white rounded-lg hover:bg-emerald-700 transition-colors text-xs font-bold">
+                              Click here to view Courses
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    }
+
                     return (
                       <div key={m.id} className={`flex flex-col ${isStudent ? "items-end" : "items-start"}`}>
                         {!isStudent && <div className="text-[10px] text-slate-400 mb-1 uppercase font-semibold ml-1 flex items-center gap-1">{m.senderRole === 'bot' ? '🤖 Agent' : '👨‍🏫 Admin'}</div>}
-                        <div className={`px-4 py-2 rounded-2xl max-w-[85%] text-sm shadow-sm ${isStudent ? "bg-italy-green text-white rounded-tr-sm" : "bg-white border border-slate-200 text-slate-700 rounded-tl-sm"}`}>
+                        <div className={`px-4 py-2.5 rounded-2xl max-w-[85%] text-sm shadow-sm ${isStudent ? "bg-italy-green text-white rounded-tr-sm" : "bg-white border border-slate-200 text-slate-700 rounded-tl-sm leading-relaxed"}`}>
                           {m.message}
                         </div>
                       </div>
@@ -168,10 +196,27 @@ export default function ChatWidget() {
                   })}
                   <div ref={messagesEndRef} />
                 </div>
+                
+                {/* Suggested Questions */}
+                {faqs.length > 0 && (
+                  <div className="px-3 py-2 bg-white border-t border-slate-100 flex gap-2 overflow-x-auto scrollbar-hide">
+                    {faqs.map(faq => (
+                      <button
+                        key={faq.id}
+                        onClick={() => sendSpecificMessage(faq.question)}
+                        className="whitespace-nowrap px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-medium rounded-full transition-colors flex items-center gap-1.5 flex-shrink-0"
+                      >
+                        <HelpCircle className="w-3.5 h-3.5" />
+                        {faq.question}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
                 <div className="p-3 bg-white border-t border-slate-100 shrink-0">
-                  <form onSubmit={handleSendMessage} className="flex gap-2">
-                    <input type="text" value={reply} onChange={(e) => setReply(e.target.value)} className="flex-1 px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-italy-green/20 focus:border-italy-green text-sm" placeholder="Type a message..." />
-                    <button type="submit" disabled={!reply.trim()} className="p-2 bg-italy-green text-white rounded-xl hover:bg-emerald-700 transition-colors disabled:opacity-50">
+                  <form onSubmit={handleSendMessage} className="flex gap-2 relative">
+                    <input type="text" value={reply} onChange={(e) => setReply(e.target.value)} className="flex-1 pl-4 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-italy-green/20 focus:border-italy-green text-sm transition-all" placeholder="Type a message..." />
+                    <button type="submit" disabled={!reply.trim()} className="absolute right-1.5 top-1.5 p-1.5 bg-italy-green text-white rounded-lg hover:bg-emerald-700 transition-colors disabled:opacity-50">
                       <Send className="w-4 h-4" />
                     </button>
                   </form>

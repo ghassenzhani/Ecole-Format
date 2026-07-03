@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslation } from "@/lib/i18nContext";
+
 import Link from "next/link";
 import { GraduationCap, MapPin, Phone, Mail } from "lucide-react";
 
@@ -43,6 +45,8 @@ const footerLinks = {
 };
 
 export default function Footer() {
+  const { t } = useTranslation();
+
   return (
     <footer className="bg-slate-900 text-slate-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -61,8 +65,7 @@ export default function Footer() {
               </div>
             </Link>
             <p className="text-sm text-slate-400 leading-relaxed mb-6 max-w-sm">
-              Leading Italian language school in Tunisia. Face-to-face and online courses, 
-              CELI exam preparation, accredited by the University of Perugia.
+              {t("footer.description")}
             </p>
             <div className="flex flex-col gap-3 text-sm">
               <div className="flex items-center gap-3">
@@ -124,7 +127,7 @@ export default function Footer() {
         {/* Bottom */}
         <div className="mt-12 pt-8 border-t border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-xs text-slate-500">
-            &copy; {new Date().getFullYear()} Format Italian School. All rights reserved.
+            &copy; {new Date().getFullYear()} Format Italian School. {t("footer.rights")}
           </p>
           <div className="flex items-center gap-4">
             <a

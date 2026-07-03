@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslation } from "@/lib/i18nContext";
+
 import { motion } from "framer-motion";
 import Link from "next/link";
 import {
@@ -112,6 +114,8 @@ const stats = [
 ];
 
 export default function HomePage() {
+  const { t } = useTranslation();
+
   return (
     <div>
       {/* Hero Section */}
@@ -132,40 +136,45 @@ export default function HomePage() {
             >
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full border border-slate-200/60 shadow-sm mb-6">
                 <span className="w-2 h-2 rounded-full bg-italy-green animate-pulse" />
-                <span className="text-sm font-medium text-slate-600">Accredited by University of Perugia</span>
+                <span className="text-sm font-medium text-slate-600">{t("hero.accredited")}</span>
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-slate-900 leading-[1.1] mb-6">
-                Learn Italian{" "}
-                <span className="gradient-text">in Tunisia</span>
+                {t("hero.title1")}{" "}
+                <span className="gradient-text">{t("hero.title2")}</span>
               </h1>
               <p className="text-lg md:text-xl text-slate-500 leading-relaxed mb-8 max-w-xl">
-                Face-to-face and online Italian courses. CELI exam preparation, 
-                study visa assistance, and document preparation for studying in Italy.
+                {t("hero.desc")}
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
                   href="/contact"
                   className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-italy-green to-emerald-600 text-white font-semibold rounded-2xl shadow-xl shadow-emerald-500/25 hover:shadow-2xl hover:shadow-emerald-500/30 transition-all hover:-translate-y-0.5"
                 >
-                  Free Consultation
+                  {t("hero.consultation")}
                   <ArrowRight className="w-5 h-5" />
                 </Link>
                 <Link
                   href="/courses"
                   className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-slate-700 font-semibold rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5"
                 >
-                  Explore Courses
+                  {t("hero.explore")}
                 </Link>
               </div>
 
               {/* Quick stats */}
               <div className="flex items-center gap-6 mt-10 pt-8 border-t border-slate-200/60">
-                {stats.slice(0, 3).map((stat) => (
-                  <div key={stat.label}>
-                    <div className="text-2xl md:text-3xl font-bold text-slate-900">{stat.value}</div>
-                    <div className="text-xs text-slate-500 mt-0.5">{stat.label}</div>
-                  </div>
-                ))}
+                <div key="students">
+                  <div className="text-2xl md:text-3xl font-bold text-slate-900">500+</div>
+                  <div className="text-xs text-slate-500 mt-0.5">{t("hero.stats.students")}</div>
+                </div>
+                <div key="passRate">
+                  <div className="text-2xl md:text-3xl font-bold text-slate-900">95%</div>
+                  <div className="text-xs text-slate-500 mt-0.5">{t("hero.stats.passRate")}</div>
+                </div>
+                <div key="experience">
+                  <div className="text-2xl md:text-3xl font-bold text-slate-900">10+</div>
+                  <div className="text-xs text-slate-500 mt-0.5">{t("hero.stats.experience")}</div>
+                </div>
               </div>
             </motion.div>
 

@@ -4,20 +4,30 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, GraduationCap } from "lucide-react";
-
-const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/courses", label: "Courses" },
-  { href: "/study-in-italy", label: "Study in Italy" },
-  { href: "/about", label: "About Us" },
-  { href: "/contact", label: "Contact" },
-];
+import { Menu, X, GraduationCap, Globe } from "lucide-react";
+import { useTranslation } from "@/lib/i18nContext";
+import { Language } from "@/lib/dictionaries";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
+  const { lang, setLang, t } = useTranslation();
+
+  const navLinks = [
+    { href: "/", label: t("nav.home") },
+    { href: "/courses", label: t("nav.courses") },
+    { href: "/study-in-italy", label: t("nav.studyInItaly") },
+    { href: "/about", label: t("nav.aboutUs") },
+    { href: "/contact", label: t("nav.contact") },
+  ];
+
+  const languages: { code: Language; label: string }[] = [
+    { code: "en", label: "English" },
+    { code: "fr", label: "Français" },
+    { code: "it", label: "Italiano" },
+  ];
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -67,25 +77,66 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
+            
+            {/* Language Switcher Desktop */}
+            <div className="relative ml-2">
+              <button 
+                onClick={() => setLangOpen(!langOpen)}
+                className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 rounded-lg transition-colors"
+              >
+                <Globe className="w-4 h-4" />
+                {lang.toUpperCase()}
+              </button>
+              
+              <AnimatePresence>
+                {langOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    className="absolute top-full right-0 mt-2 w-32 bg-white rounded-xl shadow-xl border border-slate-100 py-2"
+                  >
+                    {languages.map((l) => (
+                      <button
+                        key={l.code}
+                        onClick={() => { setLang(l.code); setLangOpen(false); }}
+                        className={`w-full text-left px-4 py-2 text-sm transition-colors ${lang === l.code ? "bg-emerald-50 text-italy-green font-semibold" : "text-slate-600 hover:bg-slate-50"}`}
+                      >
+                        {l.label}
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
             <Link
               href="/contact"
               className="ml-4 px-5 py-2.5 bg-gradient-to-r from-italy-green to-emerald-600 text-white text-sm font-semibold rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-xl hover:shadow-emerald-500/30 transition-all hover:-translate-y-0.5"
             >
-              Free Consultation
+              {t("nav.freeConsultation")}
             </Link>
           </nav>
 
           {/* Mobile Toggle */}
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 rounded-lg hover:bg-slate-100 transition-colors"
-          >
-            {isOpen ? (
-              <X className="w-6 h-6 text-slate-700" />
-            ) : (
-              <Menu className="w-6 h-6 text-slate-700" />
-            )}
-          </button>
+          <div className="md:hidden flex items-center gap-2">
+            <button
+              onClick={() => setLang(lang === 'en' ? 'fr' : lang === 'fr' ? 'it' : 'en')}
+              className="p-2 rounded-lg text-slate-600 hover:bg-slate-100 font-bold text-xs"
+            >
+              {lang.toUpperCase()}
+            </button>
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="p-2 rounded-lg hover:bg-slate-100 transition-colors"
+            >
+              {isOpen ? (
+                <X className="w-6 h-6 text-slate-700" />
+              ) : (
+                <Menu className="w-6 h-6 text-slate-700" />
+              )}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -115,7 +166,7 @@ export default function Navbar() {
                 onClick={() => setIsOpen(false)}
                 className="mt-2 px-4 py-3 bg-gradient-to-r from-italy-green to-emerald-600 text-white text-sm font-semibold rounded-xl text-center shadow-lg"
               >
-                Free Consultation
+                {t("nav.freeConsultation")}
               </Link>
             </nav>
           </motion.div>

@@ -28,17 +28,25 @@ export async function POST(request: Request) {
 
     await db.update(chatSessions).set({ updatedAt: new Date() }).where(eq(chatSessions.id, sessionId));
 
-    // 2. Check for FAQ match
-    const faqs = await db.select().from(botFaq);
+    // 2. Check for redirect intent
+    const msgWords = message.toLowerCase().replace(/[^\w\s]/gi, '');
+    const courseKeywords = ['course', 'courses', 'cours', 'corsi', 'program', 'programs'];
+    const wantsCourses = courseKeywords.some(keyword => msgWords.includes(keyword));
+
     let matchedAnswer = null;
 
-    const msgWords = message.toLowerCase().replace(/[^\w\s]/gi, '');
-    for (const faq of faqs) {
-      const qWords = faq.question.toLowerCase().replace(/[^\w\s]/gi, '').split(' ').filter((w: string) => w.length > 3);
-      const match = qWords.some((w: string) => msgWords.includes(w));
-      if (match && qWords.length > 0) {
-        matchedAnswer = faq.answer;
-        break;
+    if (wantsCourses) {
+      matchedAnswer = '__REDIRECT__/courses';
+    } else {
+      // 3. Check for FAQ match
+      const faqs = await db.select().from(botFaq);
+      for (const faq of faqs) {
+        const qWords = faq.question.toLowerCase().replace(/[^\w\s]/gi, '').split(' ').filter((w: string) => w.length > 3);
+        const match = qWords.some((w: string) => msgWords.includes(w));
+        if (match && qWords.length > 0) {
+          matchedAnswer = faq.answer;
+          break;
+        }
       }
     }
 

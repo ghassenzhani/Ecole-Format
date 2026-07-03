@@ -6,6 +6,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ChatWidget from "@/components/ChatWidget";
 
+import { I18nProvider } from "@/lib/i18nContext";
+
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
@@ -21,10 +23,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={inter.variable}>
       <body className="antialiased min-h-screen flex flex-col">
-        <Navbar />
-        <main className="flex-1">{children}</main>
-        <Footer />
-        <ChatWidget />
+        <I18nProvider>
+          <Navbar />
+          <main className="flex-1">{children}</main>
+          <Footer />
+          <ChatWidget />
+        </I18nProvider>
       </body>
     </html>
   );
