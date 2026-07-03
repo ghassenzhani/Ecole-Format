@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Settings, MessageSquare, LayoutDashboard } from 'lucide-react';
+import { Settings, MessageSquare, LayoutDashboard, Mail } from 'lucide-react';
 import { ReactNode } from 'react';
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
@@ -18,6 +18,10 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           <Link href="/admin/chat" className="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-italy-green rounded-xl transition-colors font-medium">
             <MessageSquare className="w-5 h-5" />
             Live Chat
+          </Link>
+          <Link href="/admin/contacts" className="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-italy-green rounded-xl transition-colors font-medium">
+            <Mail className="w-5 h-5" />
+            Contact Messages
           </Link>
           <Link href="/admin/faq" className="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-italy-green rounded-xl transition-colors font-medium">
             <Settings className="w-5 h-5" />
