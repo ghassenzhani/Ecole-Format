@@ -146,11 +146,12 @@ export default function ChatWidget() {
         rel="noopener noreferrer"
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
-        whileHover={{ scale: 1.1 }}
+        whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="fixed bottom-[90px] right-6 z-50 w-12 h-12 rounded-full bg-[#25D366] text-white shadow-lg flex items-center justify-center cursor-pointer hover:shadow-xl transition-all"
+        className="fixed bottom-[96px] right-6 z-40 px-4 h-12 rounded-full bg-[#25D366] text-white shadow-lg shadow-[#25D366]/30 flex items-center gap-2 cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all group"
       >
-        <Phone className="w-6 h-6 fill-current" />
+        <Phone className="w-5 h-5 fill-current group-hover:rotate-12 transition-transform" />
+        <span className="font-semibold text-sm hidden sm:block">WhatsApp</span>
       </motion.a>
 
       {/* Main Chat Trigger */}
