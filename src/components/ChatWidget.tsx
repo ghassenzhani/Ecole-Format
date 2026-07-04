@@ -148,7 +148,7 @@ export default function ChatWidget() {
         animate={{ scale: 1 }}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="fixed bottom-[96px] right-6 z-40 px-4 h-12 rounded-full bg-[#25D366] text-white shadow-lg shadow-[#25D366]/30 flex items-center gap-2 cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all group"
+        className="fixed bottom-[96px] right-6 z-40 px-4 h-12 rounded-full bg-[#25D366]/80 backdrop-blur-md border border-white/20 text-white shadow-lg shadow-[#25D366]/20 flex items-center gap-2 cursor-pointer hover:bg-[#25D366] hover:shadow-xl hover:-translate-y-1 transition-all group"
       >
         <Phone className="w-5 h-5 fill-current group-hover:rotate-12 transition-transform" />
         <span className="font-semibold text-sm hidden sm:block">WhatsApp</span>
