@@ -141,7 +141,7 @@ export default function ChatWidget() {
     <>
       {/* WhatsApp Button */}
       <motion.a
-        href="https://wa.me/21650000000"
+        href="https://wa.me/21627477123"
         target="_blank"
         rel="noopener noreferrer"
         initial={{ scale: 0 }}
