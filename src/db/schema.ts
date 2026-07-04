@@ -1,5 +1,13 @@
 import { pgTable, serial, text, timestamp, varchar, integer } from "drizzle-orm/pg-core";
 
+export const students = pgTable("students", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  email: varchar("email", { length: 255 }).notNull().unique(),
+  passwordHash: varchar("password_hash", { length: 255 }).notNull(),
+  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+});
+
 export const contacts = pgTable("contacts", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
@@ -12,6 +20,7 @@ export const contacts = pgTable("contacts", {
 
 export const chatSessions = pgTable("chat_sessions", {
   id: serial("id").primaryKey(),
+  studentId: integer("student_id").references(() => students.id, { onDelete: "set null" }),
   studentName: varchar("student_name", { length: 255 }).notNull(),
   studentEmail: varchar("student_email", { length: 255 }).notNull(),
   status: varchar("status", { length: 50 }).default("open").notNull(), // 'open' | 'closed'

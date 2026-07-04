@@ -3,37 +3,63 @@
 import { useState, useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, X, Send, User, Mail, HelpCircle } from "lucide-react";
+import { MessageCircle, X, Send, User, Mail, HelpCircle, Lock, Phone } from "lucide-react";
 import { useTranslation } from "@/lib/i18nContext";
 
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
-  const [step, setStep] = useState<"form" | "chat">("form");
-  const [formData, setFormData] = useState({ name: "", email: "" });
+  const [step, setStep] = useState<"auth" | "chat">("auth");
+  const [isLoginMode, setIsLoginMode] = useState(false);
+  
+  const [formData, setFormData] = useState({ name: "", email: "", password: "" });
+  const [student, setStudent] = useState<any>(null);
+  
   const [sessionId, setSessionId] = useState<number | null>(null);
   const [messages, setMessages] = useState<any[]>([]);
   const [faqs, setFaqs] = useState<{ id: number; question: string }[]>([]);
   const [reply, setReply] = useState("");
   const [loading, setLoading] = useState(false);
+  const [authError, setAuthError] = useState("");
+  
   const { t } = useTranslation();
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const router = useRouter();
 
-  // Restore session from localStorage on mount
   useEffect(() => {
-    const savedSession = localStorage.getItem("chatSessionId");
-    if (savedSession) {
-      setSessionId(parseInt(savedSession));
-      setStep("chat");
-    }
-    
+    // Check if user is logged in
+    fetch("/api/auth/me")
+      .then(res => res.json())
+      .then(data => {
+        if (data.student) {
+          setStudent(data.student);
+          checkExistingSession(data.student.email, data.student.name);
+        }
+      })
+      .catch(() => {});
+
     // Fetch FAQs
     fetch("/api/chat/faq").then(res => res.json()).then(data => {
       if (Array.isArray(data)) setFaqs(data);
     }).catch(() => {});
   }, []);
+
+  const checkExistingSession = async (email: string, name: string) => {
+    try {
+      const res = await fetch("/api/chat/session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, name }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setSessionId(data.sessionId);
+        setStep("chat");
+        fetchMessages(data.sessionId);
+      }
+    } catch (err) {}
+  };
 
   const fetchMessages = async (sid: number) => {
     try {
@@ -57,30 +83,35 @@ export default function ChatWidget() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isOpen]);
 
-  const handleStartSession = async (e: React.FormEvent) => {
+  const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setAuthError("");
+    
+    const endpoint = isLoginMode ? "/api/auth/login" : "/api/auth/register";
     try {
-      const res = await fetch("/api/chat/session", {
+      const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-      if (res.ok) {
-        const data = await res.json();
-        setSessionId(data.sessionId);
-        localStorage.setItem("chatSessionId", data.sessionId.toString());
-        setStep("chat");
-        fetchMessages(data.sessionId);
+      
+      const data = await res.json();
+      if (!res.ok) {
+        setAuthError(data.error || "Authentication failed");
+      } else {
+        setStudent(data.student);
+        await checkExistingSession(data.student.email, data.student.name);
       }
-    } catch (err) {}
+    } catch (err) {
+      setAuthError("An error occurred");
+    }
     setLoading(false);
   };
 
   const sendSpecificMessage = async (msgText: string) => {
     if (!msgText.trim() || !sessionId) return;
     
-    // Optimistic update
     setMessages([...messages, { id: Date.now(), senderRole: "student", message: msgText, createdAt: new Date() }]);
 
     try {
@@ -104,8 +135,25 @@ export default function ChatWidget() {
     return null;
   }
 
+  const unreadCount = messages.filter(m => m.senderRole !== 'student' && new Date(m.createdAt) > new Date(Date.now() - 60000)).length;
+
   return (
     <>
+      {/* WhatsApp Button */}
+      <motion.a
+        href="https://wa.me/21650000000"
+        target="_blank"
+        rel="noopener noreferrer"
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
+        className="fixed bottom-[90px] right-6 z-50 w-12 h-12 rounded-full bg-[#25D366] text-white shadow-lg flex items-center justify-center cursor-pointer hover:shadow-xl transition-all"
+      >
+        <Phone className="w-6 h-6 fill-current" />
+      </motion.a>
+
+      {/* Main Chat Trigger */}
       <motion.button
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
@@ -120,8 +168,11 @@ export default function ChatWidget() {
               <X className="w-6 h-6" />
             </motion.div>
           ) : (
-            <motion.div key="open" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.2 }}>
+            <motion.div key="open" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.2 }} className="relative">
               <MessageCircle className="w-6 h-6" />
+              {unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white animate-pulse" />
+              )}
             </motion.div>
           )}
         </AnimatePresence>
@@ -138,40 +189,62 @@ export default function ChatWidget() {
             className="fixed bottom-24 right-6 z-50 w-[360px] h-[550px] max-w-[calc(100vw-3rem)] max-h-[calc(100vh-8rem)] bg-white rounded-2xl shadow-2xl shadow-slate-300/50 border border-slate-100 flex flex-col overflow-hidden"
           >
             {/* Header */}
-            <div className="bg-gradient-to-r from-italy-green to-emerald-600 px-5 py-4 shrink-0 shadow-sm z-10">
-              <h3 className="text-white font-semibold text-sm">{t("chat.liveSupport")}</h3>
-              <p className="text-emerald-100 text-xs mt-0.5">{t("chat.replyInstantly")}</p>
+            <div className="bg-gradient-to-r from-italy-green to-emerald-600 px-5 py-4 shrink-0 shadow-sm z-10 flex justify-between items-center">
+              <div>
+                <h3 className="text-white font-semibold text-sm">{t("chat.liveSupport")}</h3>
+                <p className="text-emerald-100 text-xs mt-0.5">{student ? `Welcome, ${student.name}` : t("chat.replyInstantly")}</p>
+              </div>
             </div>
 
             {/* Body */}
-            {step === "form" ? (
+            {step === "auth" ? (
               <div className="p-5 flex-1 overflow-y-auto flex flex-col justify-center bg-slate-50">
-                <form onSubmit={handleStartSession} className="space-y-4 bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-                  <p className="text-sm text-slate-600 mb-2 text-center">{t("chat.enterDetails")}</p>
+                <form onSubmit={handleAuth} className="space-y-4 bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+                  <div className="text-center mb-4">
+                    <h4 className="font-bold text-slate-800">{isLoginMode ? "Welcome Back" : "Create Account"}</h4>
+                    <p className="text-xs text-slate-500 mt-1">To save your chat history</p>
+                  </div>
+                  
+                  {authError && <div className="p-2 bg-red-50 text-red-600 text-xs rounded-lg text-center">{authError}</div>}
+                  
+                  {!isLoginMode && (
+                    <div>
+                      <label className="flex items-center gap-1.5 text-xs font-medium text-slate-600 mb-1.5">
+                        <User className="w-3.5 h-3.5" /> Name
+                      </label>
+                      <input type="text" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-italy-green/20 focus:border-italy-green transition-all" placeholder="John Doe" />
+                    </div>
+                  )}
                   <div>
                     <label className="flex items-center gap-1.5 text-xs font-medium text-slate-600 mb-1.5">
-                      <User className="w-3.5 h-3.5" /> {t("chat.name")}
+                      <Mail className="w-3.5 h-3.5" /> Email
                     </label>
-                    <input type="text" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="w-full px-3 py-2.5 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-italy-green/20 focus:border-italy-green transition-all" placeholder={t("chat.name")} />
+                    <input type="email" required value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-italy-green/20 focus:border-italy-green transition-all" placeholder="your@email.com" />
                   </div>
                   <div>
                     <label className="flex items-center gap-1.5 text-xs font-medium text-slate-600 mb-1.5">
-                      <Mail className="w-3.5 h-3.5" /> {t("chat.email")}
+                      <Lock className="w-3.5 h-3.5" /> Password
                     </label>
-                    <input type="email" required value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full px-3 py-2.5 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-italy-green/20 focus:border-italy-green transition-all" placeholder="your@email.com" />
+                    <input type="password" required minLength={6} value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-italy-green/20 focus:border-italy-green transition-all" placeholder="••••••••" />
                   </div>
                   <button type="submit" disabled={loading} className="w-full py-2.5 bg-gradient-to-r from-italy-green to-emerald-600 text-white text-sm font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all disabled:opacity-60 flex items-center justify-center mt-2">
-                    {loading ? <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : t("chat.startChat")}
+                    {loading ? <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : (isLoginMode ? "Login" : "Register")}
+                  </button>
+                  
+                  <button type="button" onClick={() => setIsLoginMode(!isLoginMode)} className="w-full text-xs text-slate-500 hover:text-italy-green transition-colors mt-2">
+                    {isLoginMode ? "Don't have an account? Register" : "Already have an account? Login"}
                   </button>
                 </form>
               </div>
             ) : (
               <>
                 <div className="flex-1 p-5 overflow-y-auto space-y-4 bg-slate-50/50 flex flex-col">
+                  {messages.length === 0 && (
+                    <div className="text-center text-sm text-slate-400 my-4">No messages yet. Send a message to start!</div>
+                  )}
                   {messages.map((m) => {
                     const isStudent = m.senderRole === "student";
                     
-                    // Handle special redirect command from bot
                     if (m.message.startsWith('__REDIRECT__/')) {
                       const redirectUrl = m.message.replace('__REDIRECT__', '');
                       return (
@@ -199,7 +272,6 @@ export default function ChatWidget() {
                   <div ref={messagesEndRef} />
                 </div>
                 
-                {/* Suggested Questions */}
                 {faqs.length > 0 && (
                   <div className="px-3 py-2 bg-white border-t border-slate-100 flex gap-2 overflow-x-auto scrollbar-hide">
                     {faqs.map(faq => (
