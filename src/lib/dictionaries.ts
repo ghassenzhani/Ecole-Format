@@ -45,8 +45,8 @@ export const dictionaries: Dictionary = {
       title: "Course Levels",
       subtitle: "From beginner to advanced, we have the right course for your Italian language journey and visa requirements.",
       items: [
-        { level: "A1", name: "Beginner", desc: "Basic Italian for everyday situations. Required for work visa applications.", visa: "Work Visa" },
-        { level: "A2", name: "Elementary", desc: "Understand and communicate in routine tasks and familiar topics.", visa: "" },
+        { level: "A1", name: "Beginner", desc: "Basic Italian for everyday situations.", visa: "" },
+        { level: "A2", name: "Elementary", desc: "Understand and communicate in routine tasks and familiar topics. Required for work visa applications.", visa: "Work Visa" },
         { level: "B1", name: "Intermediate", desc: "Deal with most situations while traveling. Required for Italian nationality.", visa: "Nationality" },
         { level: "B2", name: "Upper Intermediate", desc: "Interact with native speakers fluently. Required for study visa applications.", visa: "Study Visa" }
       ]
@@ -186,8 +186,8 @@ export const dictionaries: Dictionary = {
       title: "Niveaux de Cours",
       subtitle: "Du débutant au avancé, nous avons le cours adapté à votre parcours et aux exigences de visa.",
       items: [
-        { level: "A1", name: "Débutant", desc: "Italien de base pour les situations quotidiennes. Requis pour le visa de travail.", visa: "Visa de Travail" },
-        { level: "A2", name: "Élémentaire", desc: "Comprendre et communiquer dans les tâches de routine et les sujets familiers.", visa: "" },
+        { level: "A1", name: "Débutant", desc: "Italien de base pour les situations quotidiennes.", visa: "" },
+        { level: "A2", name: "Élémentaire", desc: "Comprendre et communiquer dans les tâches de routine et les sujets familiers. Requis pour le visa de travail.", visa: "Visa de Travail" },
         { level: "B1", name: "Intermédiaire", desc: "Faire face à la plupart des situations en voyage. Requis pour la nationalité italienne.", visa: "Nationalité" },
         { level: "B2", name: "Intermédiaire Supérieur", desc: "Interagir couramment avec des locuteurs natifs. Requis pour le visa d'études.", visa: "Visa d'Études" }
       ]
@@ -327,8 +327,8 @@ export const dictionaries: Dictionary = {
       title: "Livelli dei Corsi",
       subtitle: "Dal principiante all'avanzato, abbiamo il corso giusto per il tuo percorso.",
       items: [
-        { level: "A1", name: "Principiante", desc: "Italiano di base per le situazioni quotidiane. Richiesto per il visto di lavoro.", visa: "Visto Lavoro" },
-        { level: "A2", name: "Elementare", desc: "Comprendere e comunicare in compiti di routine e argomenti familiari.", visa: "" },
+        { level: "A1", name: "Principiante", desc: "Italiano di base per le situazioni quotidiane.", visa: "" },
+        { level: "A2", name: "Elementare", desc: "Comprendere e comunicare in compiti di routine e argomenti familiari. Richiesto per il visto di lavoro.", visa: "Visto Lavoro" },
         { level: "B1", name: "Intermedio", desc: "Gestire la maggior parte delle situazioni in viaggio. Richiesto per la cittadinanza.", visa: "Cittadinanza" },
         { level: "B2", name: "Intermedio Superiore", desc: "Interagire fluentemente con i madrelingua. Richiesto per il visto di studio.", visa: "Visto Studio" }
       ]
