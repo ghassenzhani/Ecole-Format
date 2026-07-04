@@ -3,23 +3,19 @@
 import { useState, useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, X, Send, User, Mail, HelpCircle, Lock, Phone } from "lucide-react";
+import { MessageCircle, X, Send, HelpCircle, Phone, LogIn } from "lucide-react";
 import { useTranslation } from "@/lib/i18nContext";
+import { useAuth } from "@/lib/AuthContext";
 
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
-  const [step, setStep] = useState<"auth" | "chat">("auth");
-  const [isLoginMode, setIsLoginMode] = useState(false);
   
-  const [formData, setFormData] = useState({ name: "", email: "", password: "" });
-  const [student, setStudent] = useState<any>(null);
+  const { student, openAuthModal } = useAuth();
   
   const [sessionId, setSessionId] = useState<number | null>(null);
   const [messages, setMessages] = useState<any[]>([]);
   const [faqs, setFaqs] = useState<{ id: number; question: string }[]>([]);
   const [reply, setReply] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [authError, setAuthError] = useState("");
   
   const { t } = useTranslation();
   
@@ -28,22 +24,20 @@ export default function ChatWidget() {
   const router = useRouter();
 
   useEffect(() => {
-    // Check if user is logged in
-    fetch("/api/auth/me")
-      .then(res => res.json())
-      .then(data => {
-        if (data.student) {
-          setStudent(data.student);
-          checkExistingSession(data.student.email, data.student.name);
-        }
-      })
-      .catch(() => {});
-
     // Fetch FAQs
     fetch("/api/chat/faq").then(res => res.json()).then(data => {
       if (Array.isArray(data)) setFaqs(data);
     }).catch(() => {});
   }, []);
+
+  useEffect(() => {
+    if (student) {
+      checkExistingSession(student.email, student.name);
+    } else {
+      setSessionId(null);
+      setMessages([]);
+    }
+  }, [student]);
 
   const checkExistingSession = async (email: string, name: string) => {
     try {
@@ -55,7 +49,6 @@ export default function ChatWidget() {
       if (res.ok) {
         const data = await res.json();
         setSessionId(data.sessionId);
-        setStep("chat");
         fetchMessages(data.sessionId);
       }
     } catch (err) {}
@@ -82,32 +75,6 @@ export default function ChatWidget() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isOpen]);
-
-  const handleAuth = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setAuthError("");
-    
-    const endpoint = isLoginMode ? "/api/auth/login" : "/api/auth/register";
-    try {
-      const res = await fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-      
-      const data = await res.json();
-      if (!res.ok) {
-        setAuthError(data.error || "Authentication failed");
-      } else {
-        setStudent(data.student);
-        await checkExistingSession(data.student.email, data.student.name);
-      }
-    } catch (err) {
-      setAuthError("An error occurred");
-    }
-    setLoading(false);
-  };
 
   const sendSpecificMessage = async (msgText: string) => {
     if (!msgText.trim() || !sessionId) return;
@@ -198,44 +165,20 @@ export default function ChatWidget() {
             </div>
 
             {/* Body */}
-            {step === "auth" ? (
-              <div className="p-5 flex-1 overflow-y-auto flex flex-col justify-center bg-slate-50">
-                <form onSubmit={handleAuth} className="space-y-4 bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-                  <div className="text-center mb-4">
-                    <h4 className="font-bold text-slate-800">{isLoginMode ? "Welcome Back" : "Create Account"}</h4>
-                    <p className="text-xs text-slate-500 mt-1">To save your chat history</p>
-                  </div>
-                  
-                  {authError && <div className="p-2 bg-red-50 text-red-600 text-xs rounded-lg text-center">{authError}</div>}
-                  
-                  {!isLoginMode && (
-                    <div>
-                      <label className="flex items-center gap-1.5 text-xs font-medium text-slate-600 mb-1.5">
-                        <User className="w-3.5 h-3.5" /> Name
-                      </label>
-                      <input type="text" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-italy-green/20 focus:border-italy-green transition-all" placeholder="John Doe" />
-                    </div>
-                  )}
-                  <div>
-                    <label className="flex items-center gap-1.5 text-xs font-medium text-slate-600 mb-1.5">
-                      <Mail className="w-3.5 h-3.5" /> Email
-                    </label>
-                    <input type="email" required value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-italy-green/20 focus:border-italy-green transition-all" placeholder="your@email.com" />
-                  </div>
-                  <div>
-                    <label className="flex items-center gap-1.5 text-xs font-medium text-slate-600 mb-1.5">
-                      <Lock className="w-3.5 h-3.5" /> Password
-                    </label>
-                    <input type="password" required minLength={6} value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-italy-green/20 focus:border-italy-green transition-all" placeholder="••••••••" />
-                  </div>
-                  <button type="submit" disabled={loading} className="w-full py-2.5 bg-gradient-to-r from-italy-green to-emerald-600 text-white text-sm font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all disabled:opacity-60 flex items-center justify-center mt-2">
-                    {loading ? <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : (isLoginMode ? "Login" : "Register")}
-                  </button>
-                  
-                  <button type="button" onClick={() => setIsLoginMode(!isLoginMode)} className="w-full text-xs text-slate-500 hover:text-italy-green transition-colors mt-2">
-                    {isLoginMode ? "Don't have an account? Register" : "Already have an account? Login"}
-                  </button>
-                </form>
+            {!student ? (
+              <div className="flex-1 flex flex-col items-center justify-center p-6 bg-slate-50 text-center">
+                <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mb-4 text-emerald-600">
+                  <MessageCircle className="w-8 h-8" />
+                </div>
+                <h4 className="text-lg font-bold text-slate-800 mb-2">Sign in to Chat</h4>
+                <p className="text-sm text-slate-500 mb-6">Create an account or log in to speak with an agent and save your history.</p>
+                <button
+                  onClick={openAuthModal}
+                  className="w-full py-3 bg-gradient-to-r from-italy-green to-emerald-600 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2"
+                >
+                  <LogIn className="w-4 h-4" />
+                  Login or Register
+                </button>
               </div>
             ) : (
               <>

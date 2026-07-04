@@ -4,9 +4,10 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, GraduationCap, Globe } from "lucide-react";
+import { Menu, X, GraduationCap, Globe, LogIn, User } from "lucide-react";
 import { useTranslation } from "@/lib/i18nContext";
 import { Language } from "@/lib/dictionaries";
+import { useAuth } from "@/lib/AuthContext";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,6 +15,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
   const { lang, setLang, t } = useTranslation();
+  const { student, openAuthModal, logout } = useAuth();
 
   const navLinks = [
     { href: "/", label: t("nav.home") },
@@ -116,6 +118,28 @@ export default function Navbar() {
             >
               {t("nav.freeConsultation")}
             </Link>
+
+            {student ? (
+              <div className="relative ml-2 group cursor-pointer">
+                <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center border border-slate-200">
+                  <User className="w-5 h-5 text-slate-500" />
+                </div>
+                <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-slate-100 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                  <div className="px-4 py-2 border-b border-slate-100 mb-1">
+                    <p className="text-xs text-slate-500">Signed in as</p>
+                    <p className="text-sm font-semibold text-slate-900 truncate">{student.name}</p>
+                  </div>
+                  <button onClick={logout} className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">
+                    Log out
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button onClick={openAuthModal} className="ml-2 flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors">
+                <LogIn className="w-4 h-4" />
+                Login
+              </button>
+            )}
           </nav>
 
           {/* Mobile Toggle */}
@@ -168,6 +192,16 @@ export default function Navbar() {
               >
                 {t("nav.freeConsultation")}
               </Link>
+              {student ? (
+                <button onClick={() => { logout(); setIsOpen(false); }} className="mt-2 px-4 py-3 bg-slate-100 text-slate-700 text-sm font-semibold rounded-xl text-center">
+                  Log out ({student.name})
+                </button>
+              ) : (
+                <button onClick={() => { openAuthModal(); setIsOpen(false); }} className="mt-2 px-4 py-3 bg-slate-100 text-slate-700 text-sm font-semibold rounded-xl text-center flex items-center justify-center gap-2">
+                  <LogIn className="w-4 h-4" />
+                  Login / Register
+                </button>
+              )}
             </nav>
           </motion.div>
         )}

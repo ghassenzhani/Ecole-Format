@@ -5,8 +5,9 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ChatWidget from "@/components/ChatWidget";
-
 import { I18nProvider } from "@/lib/i18nContext";
+import { AuthProvider } from "@/lib/AuthContext";
+import AuthModal from "@/components/AuthModal";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -22,13 +23,18 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={inter.variable}>
-      <body className="antialiased min-h-screen flex flex-col">
-        <I18nProvider>
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
-          <ChatWidget />
-        </I18nProvider>
+      <body className={`${inter.className} bg-slate-50 min-h-screen flex flex-col`}>
+        <AuthProvider>
+          <I18nProvider>
+            <Navbar />
+            <AuthModal />
+            <main className="flex-1">
+              {children}
+            </main>
+            <Footer />
+            <ChatWidget />
+          </I18nProvider>
+        </AuthProvider>
       </body>
     </html>
   );
