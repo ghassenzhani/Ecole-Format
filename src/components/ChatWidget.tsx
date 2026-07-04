@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle, X, Send, User, Mail, HelpCircle } from "lucide-react";
+import { useTranslation } from "@/lib/i18nContext";
 
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,6 +15,7 @@ export default function ChatWidget() {
   const [faqs, setFaqs] = useState<{ id: number; question: string }[]>([]);
   const [reply, setReply] = useState("");
   const [loading, setLoading] = useState(false);
+  const { t } = useTranslation();
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
@@ -137,29 +139,29 @@ export default function ChatWidget() {
           >
             {/* Header */}
             <div className="bg-gradient-to-r from-italy-green to-emerald-600 px-5 py-4 shrink-0 shadow-sm z-10">
-              <h3 className="text-white font-semibold text-sm">Live Support</h3>
-              <p className="text-emerald-100 text-xs mt-0.5">We reply instantly</p>
+              <h3 className="text-white font-semibold text-sm">{t("chat.liveSupport")}</h3>
+              <p className="text-emerald-100 text-xs mt-0.5">{t("chat.replyInstantly")}</p>
             </div>
 
             {/* Body */}
             {step === "form" ? (
               <div className="p-5 flex-1 overflow-y-auto flex flex-col justify-center bg-slate-50">
                 <form onSubmit={handleStartSession} className="space-y-4 bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-                  <p className="text-sm text-slate-600 mb-2 text-center">Please enter your details to start chatting.</p>
+                  <p className="text-sm text-slate-600 mb-2 text-center">{t("chat.enterDetails")}</p>
                   <div>
                     <label className="flex items-center gap-1.5 text-xs font-medium text-slate-600 mb-1.5">
-                      <User className="w-3.5 h-3.5" /> Name
+                      <User className="w-3.5 h-3.5" /> {t("chat.name")}
                     </label>
-                    <input type="text" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="w-full px-3 py-2.5 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-italy-green/20 focus:border-italy-green transition-all" placeholder="Your name" />
+                    <input type="text" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="w-full px-3 py-2.5 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-italy-green/20 focus:border-italy-green transition-all" placeholder={t("chat.name")} />
                   </div>
                   <div>
                     <label className="flex items-center gap-1.5 text-xs font-medium text-slate-600 mb-1.5">
-                      <Mail className="w-3.5 h-3.5" /> Email
+                      <Mail className="w-3.5 h-3.5" /> {t("chat.email")}
                     </label>
                     <input type="email" required value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full px-3 py-2.5 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-italy-green/20 focus:border-italy-green transition-all" placeholder="your@email.com" />
                   </div>
                   <button type="submit" disabled={loading} className="w-full py-2.5 bg-gradient-to-r from-italy-green to-emerald-600 text-white text-sm font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all disabled:opacity-60 flex items-center justify-center mt-2">
-                    {loading ? <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : "Start Chat"}
+                    {loading ? <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : t("chat.startChat")}
                   </button>
                 </form>
               </div>
@@ -215,7 +217,7 @@ export default function ChatWidget() {
 
                 <div className="p-3 bg-white border-t border-slate-100 shrink-0">
                   <form onSubmit={handleSendMessage} className="flex gap-2 relative">
-                    <input type="text" value={reply} onChange={(e) => setReply(e.target.value)} className="flex-1 pl-4 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-italy-green/20 focus:border-italy-green text-sm transition-all" placeholder="Type a message..." />
+                    <input type="text" value={reply} onChange={(e) => setReply(e.target.value)} className="flex-1 pl-4 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-italy-green/20 focus:border-italy-green text-sm transition-all" placeholder={t("chat.typeMessage")} />
                     <button type="submit" disabled={!reply.trim()} className="absolute right-1.5 top-1.5 p-1.5 bg-italy-green text-white rounded-lg hover:bg-emerald-700 transition-colors disabled:opacity-50">
                       <Send className="w-4 h-4" />
                     </button>

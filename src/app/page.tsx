@@ -1,7 +1,6 @@
 "use client";
 
 import { useTranslation } from "@/lib/i18nContext";
-
 import { motion } from "framer-motion";
 import Link from "next/link";
 import {
@@ -12,115 +11,129 @@ import {
   ArrowRight,
   Users,
   Monitor,
-  MapPin,
   Star,
   CheckCircle2,
   GraduationCap,
 } from "lucide-react";
 import SectionHeading from "@/components/SectionHeading";
 
-const features = [
-  {
-    icon: BookOpen,
-    title: "Italian Courses",
-    description: "Face-to-face and online Italian courses from A1 to B2 levels with experienced teachers.",
-    href: "/courses",
-    color: "from-emerald-500 to-italy-green",
-  },
-  {
-    icon: Award,
-    title: "CELI Exam Center",
-    description: "Official CELI examination center accredited by the University of Perugia.",
-    href: "/courses",
-    color: "from-amber-500 to-italy-gold",
-  },
-  {
-    icon: FileCheck,
-    title: "Study in Italy",
-    description: "Complete assistance with study visa documents and university applications.",
-    href: "/study-in-italy",
-    color: "from-blue-500 to-blue-600",
-  },
-  {
-    icon: Globe,
-    title: "Online & In-Person",
-    description: "Flexible learning options with both online classes and in-person sessions.",
-    href: "/courses",
-    color: "from-violet-500 to-purple-600",
-  },
-];
-
-const levels = [
-  {
-    level: "A1",
-    name: "Beginner",
-    description: "Basic Italian for everyday situations. Required for work visa applications.",
-    visa: "Work Visa",
-    color: "bg-emerald-50 border-emerald-200",
-    badgeColor: "bg-emerald-100 text-emerald-700",
-  },
-  {
-    level: "A2",
-    name: "Elementary",
-    description: "Understand and communicate in routine tasks and familiar topics.",
-    visa: null,
-    color: "bg-blue-50 border-blue-200",
-    badgeColor: "bg-blue-100 text-blue-700",
-  },
-  {
-    level: "B1",
-    name: "Intermediate",
-    description: "Deal with most situations while traveling. Required for Italian nationality.",
-    visa: "Nationality",
-    color: "bg-amber-50 border-amber-200",
-    badgeColor: "bg-amber-100 text-amber-700",
-  },
-  {
-    level: "B2",
-    name: "Upper Intermediate",
-    description: "Interact with native speakers fluently. Required for study visa applications.",
-    visa: "Study Visa",
-    color: "bg-red-50 border-red-200",
-    badgeColor: "bg-red-100 text-red-700",
-  },
-];
-
-const testimonials = [
-  {
-    name: "Ahmed Ben",
-    role: "Student - B2 Level",
-    text: "Format helped me achieve my B2 certification in just 8 months. The teachers are incredibly patient and the CELI prep course was exactly what I needed for my study visa.",
-    rating: 5,
-  },
-  {
-    name: "Sara Khelifi",
-    role: "Student - B1 Level",
-    text: "I needed B1 for my Italian nationality application. The structured program and mock exams at Format gave me the confidence to pass on my first attempt.",
-    rating: 5,
-  },
-  {
-    name: "Karim Mzali",
-    role: "Student - A1 Level",
-    text: "Great experience learning Italian online! The flexible schedule allowed me to study while working. Perfect for my work visa requirements.",
-    rating: 5,
-  },
-];
-
-const stats = [
-  { value: "500+", label: "Students Trained" },
-  { value: "95%", label: "CELI Pass Rate" },
-  { value: "10+", label: "Years Experience" },
-  { value: "100+", label: "Visas Assisted" },
-];
-
 export default function HomePage() {
   const { t } = useTranslation();
+
+  const features = [
+    {
+      icon: BookOpen,
+      title: t("features.items.0.title"),
+      description: t("features.items.0.desc"),
+      href: "/courses",
+      color: "from-emerald-500 to-italy-green",
+    },
+    {
+      icon: Award,
+      title: t("features.items.1.title"),
+      description: t("features.items.1.desc"),
+      href: "/courses",
+      color: "from-amber-500 to-italy-gold",
+    },
+    {
+      icon: FileCheck,
+      title: t("features.items.2.title"),
+      description: t("features.items.2.desc"),
+      href: "/study-in-italy",
+      color: "from-blue-500 to-blue-600",
+    },
+    {
+      icon: Globe,
+      title: t("features.items.3.title"),
+      description: t("features.items.3.desc"),
+      href: "/courses",
+      color: "from-violet-500 to-purple-600",
+    },
+  ];
+
+  const levels = [
+    {
+      level: t("levels.items.0.level"),
+      name: t("levels.items.0.name"),
+      description: t("levels.items.0.desc"),
+      visa: t("levels.items.0.visa"),
+      color: "bg-emerald-50 border-emerald-200",
+      badgeColor: "bg-emerald-100 text-emerald-700",
+    },
+    {
+      level: t("levels.items.1.level"),
+      name: t("levels.items.1.name"),
+      description: t("levels.items.1.desc"),
+      visa: t("levels.items.1.visa"),
+      color: "bg-blue-50 border-blue-200",
+      badgeColor: "bg-blue-100 text-blue-700",
+    },
+    {
+      level: t("levels.items.2.level"),
+      name: t("levels.items.2.name"),
+      description: t("levels.items.2.desc"),
+      visa: t("levels.items.2.visa"),
+      color: "bg-amber-50 border-amber-200",
+      badgeColor: "bg-amber-100 text-amber-700",
+    },
+    {
+      level: t("levels.items.3.level"),
+      name: t("levels.items.3.name"),
+      description: t("levels.items.3.desc"),
+      visa: t("levels.items.3.visa"),
+      color: "bg-red-50 border-red-200",
+      badgeColor: "bg-red-100 text-red-700",
+    },
+  ];
+
+  const testimonials = [
+    {
+      name: "Ahmed Ben",
+      role: "Student - B2 Level",
+      text: "Format helped me achieve my B2 certification in just 8 months. The teachers are incredibly patient and the CELI prep course was exactly what I needed for my study visa.",
+      rating: 5,
+    },
+    {
+      name: "Sara Khelifi",
+      role: "Student - B1 Level",
+      text: "I needed B1 for my Italian nationality application. The structured program and mock exams at Format gave me the confidence to pass on my first attempt.",
+      rating: 5,
+    },
+    {
+      name: "Karim Mzali",
+      role: "Student - A1 Level",
+      text: "Great experience learning Italian online! The flexible schedule allowed me to study while working. Perfect for my work visa requirements.",
+      rating: 5,
+    },
+  ];
+
+  const whyChooseItems = [
+    {
+      icon: Users,
+      title: t("whyUs.items.0.title"),
+      text: t("whyUs.items.0.desc"),
+    },
+    {
+      icon: Award,
+      title: t("whyUs.items.1.title"),
+      text: t("whyUs.items.1.desc"),
+    },
+    {
+      icon: FileCheck,
+      title: t("whyUs.items.2.title"),
+      text: t("whyUs.items.2.desc"),
+    },
+    {
+      icon: Monitor,
+      title: t("whyUs.items.3.title"),
+      text: t("whyUs.items.3.desc"),
+    },
+  ];
 
   return (
     <div>
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center hero-gradient overflow-hidden pt-20">
-        {/* Background decorative elements */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-96 h-96 bg-emerald-100/50 rounded-full blur-3xl" />
           <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-red-100/40 rounded-full blur-3xl" />
@@ -185,7 +198,6 @@ export default function HomePage() {
               className="relative hidden lg:block"
             >
               <div className="relative">
-                {/* Main card */}
                 <div className="bg-white rounded-3xl shadow-2xl shadow-slate-200/50 p-8 border border-slate-100">
                   <div className="flex items-center gap-3 mb-6">
                     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-italy-green to-emerald-600 flex items-center justify-center">
@@ -234,7 +246,6 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                {/* Floating badge */}
                 <motion.div
                   animate={{ y: [0, -10, 0] }}
                   transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
@@ -249,7 +260,6 @@ export default function HomePage() {
                   </div>
                 </motion.div>
 
-                {/* Floating badge 2 */}
                 <motion.div
                   animate={{ y: [0, 10, 0] }}
                   transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
@@ -273,8 +283,8 @@ export default function HomePage() {
       <section className="section-padding bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeading
-            title="What We Offer"
-            subtitle="Comprehensive Italian language education and support services to help you achieve your goals in Italy."
+            title={t("features.title")}
+            subtitle={t("features.subtitle")}
           />
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -294,7 +304,7 @@ export default function HomePage() {
                     <h3 className="text-lg font-bold text-slate-900 mb-2">{feature.title}</h3>
                     <p className="text-sm text-slate-500 leading-relaxed">{feature.description}</p>
                     <div className="flex items-center gap-1 mt-4 text-sm font-medium text-italy-green opacity-0 group-hover:opacity-100 transition-opacity">
-                      Learn more <ArrowRight className="w-4 h-4" />
+                      {t("features.learnMore")} <ArrowRight className="w-4 h-4" />
                     </div>
                   </div>
                 </Link>
@@ -308,8 +318,8 @@ export default function HomePage() {
       <section className="section-padding bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeading
-            title="Course Levels"
-            subtitle="From beginner to advanced, we have the right course for your Italian language journey and visa requirements."
+            title={t("levels.title")}
+            subtitle={t("levels.subtitle")}
           />
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -349,34 +359,13 @@ export default function HomePage() {
               transition={{ duration: 0.6 }}
             >
               <SectionHeading
-                title="Why Choose Format?"
-                subtitle="We are committed to your success with experienced teachers, proven methods, and comprehensive support."
+                title={t("whyUs.title")}
+                subtitle={t("whyUs.subtitle")}
                 align="left"
               />
 
               <div className="space-y-6">
-                {[
-                  {
-                    icon: Users,
-                    title: "Experienced Teachers",
-                    text: "Our teaching staff includes certified Italian teachers and native speakers with years of experience.",
-                  },
-                  {
-                    icon: Award,
-                    title: "Official CELI Center",
-                    text: "Accredited by the University of Perugia, we are an official CELI examination center in Tunisia.",
-                  },
-                  {
-                    icon: FileCheck,
-                    title: "Visa Document Support",
-                    text: "We help you prepare all necessary documents for your study in Italy visa application.",
-                  },
-                  {
-                    icon: Monitor,
-                    title: "Flexible Learning",
-                    text: "Choose between face-to-face classes at our center or online sessions from the comfort of your home.",
-                  },
-                ].map((item, i) => (
+                {whyChooseItems.map((item, i) => (
                   <motion.div
                     key={item.title}
                     initial={{ opacity: 0, y: 20 }}
@@ -406,7 +395,13 @@ export default function HomePage() {
             >
               <div className="bg-gradient-to-br from-emerald-50 to-slate-100 rounded-3xl p-8 md:p-12">
                 <div className="grid grid-cols-2 gap-6">
-                  {stats.map((stat, i) => (
+                  {/* Reuse the hardcoded stats but with translations */}
+                  {[
+                    { value: "500+", label: t("hero.stats.students") },
+                    { value: "95%", label: t("hero.stats.passRate") },
+                    { value: "10+", label: t("hero.stats.experience") },
+                    { value: "100+", label: t("hero.stats.visas") },
+                  ].map((stat, i) => (
                     <motion.div
                       key={stat.label}
                       initial={{ opacity: 0, scale: 0.8 }}
@@ -476,31 +471,29 @@ export default function HomePage() {
             transition={{ duration: 0.6 }}
             className="relative bg-gradient-to-br from-slate-900 to-slate-800 rounded-3xl p-10 md:p-16 overflow-hidden"
           >
-            {/* Decorative */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-italy-green/10 rounded-full blur-3xl" />
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-italy-red/10 rounded-full blur-3xl" />
 
             <div className="relative text-center max-w-2xl mx-auto">
               <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-                Ready to Start Your Italian Journey?
+                {t("cta.title")}
               </h2>
               <p className="text-slate-300 mb-8">
-                Book your free consultation today and take the first step towards mastering Italian 
-                and achieving your goals in Italy.
+                {t("cta.desc")}
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
                   href="/contact"
                   className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-italy-green to-emerald-600 text-white font-semibold rounded-2xl shadow-xl shadow-emerald-500/25 hover:shadow-2xl transition-all hover:-translate-y-0.5"
                 >
-                  Book Free Consultation
+                  {t("cta.btn1")}
                   <ArrowRight className="w-5 h-5" />
                 </Link>
                 <Link
                   href="/courses"
                   className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/10 text-white font-semibold rounded-2xl border border-white/20 hover:bg-white/20 transition-all"
                 >
-                  View Courses
+                  {t("cta.btn2")}
                 </Link>
               </div>
             </div>

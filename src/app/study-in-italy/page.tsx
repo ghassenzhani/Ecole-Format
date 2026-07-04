@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslation } from "@/lib/i18nContext";
+
 import { motion } from "framer-motion";
 import Link from "next/link";
 import {
@@ -119,6 +121,8 @@ const universities = [
 ];
 
 export default function StudyInItalyPage() {
+  const { t } = useTranslation();
+
   return (
     <div className="pt-20">
       {/* Hero */}
@@ -138,11 +142,10 @@ export default function StudyInItalyPage() {
               <span className="text-sm font-medium text-slate-600">Your Gateway to Italy</span>
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 mb-6">
-              Study in <span className="gradient-text">Italy</span>
+              {t("study.title")}
             </h1>
             <p className="text-lg md:text-xl text-slate-500 max-w-2xl mx-auto">
-              Complete assistance for your study journey in Italy. From language certification 
-              to visa document preparation, we guide you every step of the way.
+              {t("study.desc")}
             </p>
           </motion.div>
         </div>
@@ -220,8 +223,8 @@ export default function StudyInItalyPage() {
               transition={{ duration: 0.6 }}
             >
               <SectionHeading
-                title="How We Help You"
-                subtitle="Our comprehensive support services make your study in Italy journey smooth and stress-free."
+                title={t("study.services")}
+                subtitle={t("study.servicesSub")}
                 align="left"
               />
 
@@ -364,10 +367,10 @@ export default function StudyInItalyPage() {
             transition={{ duration: 0.6 }}
           >
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Start Your Italy Journey Today
+              {t("study.bookConsultation")}
             </h2>
             <p className="text-slate-300 mb-8 max-w-xl mx-auto">
-              Book a free consultation to discuss your study plans and get personalized guidance on your visa application.
+              {t("study.bookSub")}
             </p>
             <Link
               href="/contact"

@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslation } from "@/lib/i18nContext";
+
 import { motion } from "framer-motion";
 import Link from "next/link";
 import {
@@ -100,6 +102,8 @@ const stats = [
 ];
 
 export default function AboutPage() {
+  const { t } = useTranslation();
+
   return (
     <div className="pt-20">
       {/* Hero */}
@@ -116,14 +120,13 @@ export default function AboutPage() {
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full border border-slate-200/60 shadow-sm mb-6">
               <Heart className="w-4 h-4 text-italy-red" />
-              <span className="text-sm font-medium text-slate-600">Our Story</span>
+              <span className="text-sm font-medium text-slate-600">{t("about.ourStory")}</span>
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 mb-6">
-              About <span className="gradient-text">Format</span>
+              {t("about.aboutFormat")}
             </h1>
             <p className="text-lg md:text-xl text-slate-500 max-w-2xl mx-auto">
-              A leading Italian language school in Tunisia, dedicated to helping students achieve 
-              fluency and realize their dreams of studying and living in Italy.
+              {t("about.desc")}
             </p>
           </motion.div>
         </div>
@@ -164,7 +167,7 @@ export default function AboutPage() {
               transition={{ duration: 0.6 }}
             >
               <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-6">
-                Our <span className="gradient-text">Mission</span>
+                {t("about.ourMission")}
               </h2>
               <p className="text-slate-500 leading-relaxed mb-6">
                 At Format, we believe that language is the key to unlocking new opportunities. Our mission is to provide 
@@ -218,8 +221,8 @@ export default function AboutPage() {
       <section className="section-padding bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeading
-            title="Our Journey"
-            subtitle="From a small language school to a leading Italian education center in Tunisia."
+            title={t("about.ourJourney")}
+            subtitle={t("about.journeySub")}
           />
 
           <div className="relative">
@@ -261,8 +264,8 @@ export default function AboutPage() {
       <section className="section-padding bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeading
-            title="Meet Our Team"
-            subtitle="Dedicated professionals committed to your Italian language success."
+            title={t("about.meetTeam")}
+            subtitle={t("about.teamSub")}
           />
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -302,12 +305,10 @@ export default function AboutPage() {
                 <span className="text-sm font-medium text-slate-300">Official Accreditation</span>
               </div>
               <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-                Accredited by the <span className="text-italy-green">University of Perugia</span>
+                {t("about.accredited")}
               </h2>
               <p className="text-slate-300 leading-relaxed mb-6">
-                Format is proud to be an official CELI examination center accredited by the University of Perugia, 
-                one of Italy&apos;s most prestigious universities. This accreditation ensures that our teaching standards 
-                meet the highest requirements and that our students receive internationally recognized certifications.
+                {t("about.accreditedSub")}
               </p>
               <p className="text-slate-300 leading-relaxed mb-8">
                 The CELI (Certificato di Conoscenza della Lingua Italiana) is recognized by the Italian Ministry 
@@ -388,17 +389,16 @@ export default function AboutPage() {
             transition={{ duration: 0.6 }}
           >
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
-              Join the Format Family
+              {t("about.joinFamily")}
             </h2>
             <p className="text-slate-500 mb-8 max-w-xl mx-auto">
-              Whether you want to learn Italian for personal growth, academic purposes, or professional opportunities, 
-              we are here to help you succeed.
+              {t("about.joinSub")}
             </p>
             <Link
               href="/contact"
               className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-italy-green to-emerald-600 text-white font-semibold rounded-2xl shadow-xl shadow-emerald-500/25 hover:shadow-2xl transition-all hover:-translate-y-0.5"
             >
-              Get in Touch
+              {t("about.getInTouch")}
               <ArrowRight className="w-5 h-5" />
             </Link>
           </motion.div>

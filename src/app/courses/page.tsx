@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslation } from "@/lib/i18nContext";
+
 import { motion } from "framer-motion";
 import Link from "next/link";
 import {
@@ -151,6 +153,8 @@ const scheduleOptions = [
 ];
 
 export default function CoursesPage() {
+  const { t } = useTranslation();
+
   return (
     <div className="pt-20">
       {/* Hero */}
@@ -167,14 +171,13 @@ export default function CoursesPage() {
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full border border-slate-200/60 shadow-sm mb-6">
               <BookOpen className="w-4 h-4 text-italy-green" />
-              <span className="text-sm font-medium text-slate-600">Comprehensive Italian Programs</span>
+              <span className="text-sm font-medium text-slate-600">{t("courses.programs")}</span>
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 mb-6">
-              Our <span className="gradient-text">Courses</span>
+              {t("courses.ourCourses")}
             </h1>
             <p className="text-lg md:text-xl text-slate-500 max-w-2xl mx-auto">
-              From A1 beginner to B2 upper intermediate, we offer structured Italian language courses 
-              designed to help you achieve fluency and pass your CELI exams.
+              {t("courses.desc")}
             </p>
           </motion.div>
         </div>
@@ -184,8 +187,8 @@ export default function CoursesPage() {
       <section className="section-padding bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeading
-            title="Course Programs"
-            subtitle="Choose the level that matches your current skills and goals."
+            title={t("courses.coursePrograms")}
+            subtitle={t("courses.courseProgramsSub")}
           />
 
           <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
@@ -273,8 +276,8 @@ export default function CoursesPage() {
               transition={{ duration: 0.6 }}
             >
               <SectionHeading
-                title="CELI Certification"
-                subtitle="The Certificate of Knowledge of the Italian Language, recognized by the University of Perugia."
+                title={t("courses.celiCert")}
+                subtitle={t("courses.celiCertSub")}
                 align="left"
               />
 
@@ -370,8 +373,8 @@ export default function CoursesPage() {
       <section className="section-padding bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeading
-            title="Flexible Schedule"
-            subtitle="Choose the schedule that fits your lifestyle. Morning, afternoon, evening, or weekend classes available."
+            title={t("courses.flexibleSchedule")}
+            subtitle={t("courses.flexibleScheduleSub")}
           />
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -406,16 +409,16 @@ export default function CoursesPage() {
             transition={{ duration: 0.6 }}
           >
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Not Sure Which Level is Right for You?
+              {t("courses.notSure")}
             </h2>
             <p className="text-slate-300 mb-8 max-w-xl mx-auto">
-              Book a free placement test and consultation. Our team will help you choose the best course for your goals.
+              {t("courses.notSureSub")}
             </p>
             <Link
               href="/contact"
               className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-italy-green to-emerald-600 text-white font-semibold rounded-2xl shadow-xl shadow-emerald-500/25 hover:shadow-2xl transition-all hover:-translate-y-0.5"
             >
-              Book Free Placement Test
+              {t("courses.bookTest")}
               <ArrowRight className="w-5 h-5" />
             </Link>
           </motion.div>

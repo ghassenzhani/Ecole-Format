@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslation } from "@/lib/i18nContext";
 import { motion } from "framer-motion";
 import {
   MapPin,
@@ -48,6 +49,7 @@ export default function ContactPage() {
   });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { t } = useTranslation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -84,14 +86,13 @@ export default function ContactPage() {
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full border border-slate-200/60 shadow-sm mb-6">
               <MessageCircle className="w-4 h-4 text-italy-green" />
-              <span className="text-sm font-medium text-slate-600">Get in Touch</span>
+              <span className="text-sm font-medium text-slate-600">{t("contact.getInTouch")}</span>
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 mb-6">
-              Contact <span className="gradient-text">Us</span>
+              {t("contact.contactUs")}
             </h1>
             <p className="text-lg md:text-xl text-slate-500 max-w-2xl mx-auto">
-              Have questions about our courses or services? We are here to help. 
-              Reach out for a free consultation.
+              {t("contact.desc")}
             </p>
           </motion.div>
         </div>
@@ -110,11 +111,10 @@ export default function ContactPage() {
               className="lg:col-span-2"
             >
               <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-6">
-                Let&apos;s Talk
+                {t("contact.letsTalk")}
               </h2>
               <p className="text-slate-500 leading-relaxed mb-8">
-                Whether you want to learn Italian, prepare for CELI exams, or need help with your 
-                study visa documents, our team is ready to assist you.
+                {t("contact.letsTalkDesc")}
               </p>
 
               <div className="space-y-6">
@@ -142,7 +142,7 @@ export default function ContactPage() {
 
               {/* Social */}
               <div className="mt-10 pt-8 border-t border-slate-100">
-                <h4 className="font-semibold text-slate-900 mb-4">Follow Us</h4>
+                <h4 className="font-semibold text-slate-900 mb-4">{t("contact.followUs")}</h4>
                 <div className="flex gap-3">
                   <a
                     href="https://www.facebook.com/ecoleformat/?locale=fr_FR"
@@ -184,15 +184,15 @@ export default function ContactPage() {
                     <div className="w-16 h-16 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-4">
                       <CheckCircle2 className="w-8 h-8 text-italy-green" />
                     </div>
-                    <h3 className="text-xl font-bold text-slate-900 mb-2">Message Sent!</h3>
+                    <h3 className="text-xl font-bold text-slate-900 mb-2">{t("contact.messageSent")}</h3>
                     <p className="text-slate-500 mb-6">
-                      Thank you for reaching out. We will get back to you within 24 hours.
+                      {t("contact.thankYou")}
                     </p>
                     <button
                       onClick={() => setSubmitted(false)}
                       className="inline-flex items-center gap-2 px-6 py-3 bg-slate-900 text-white text-sm font-semibold rounded-xl hover:bg-slate-800 transition-colors"
                     >
-                      Send Another Message
+                      {t("contact.sendAnother")}
                       <ArrowRight className="w-4 h-4" />
                     </button>
                   </motion.div>
@@ -283,7 +283,7 @@ export default function ContactPage() {
                       ) : (
                         <>
                           <Send className="w-4 h-4" />
-                          Send Message
+                          {t("contact.sendMessage")}
                         </>
                       )}
                     </button>
@@ -299,8 +299,8 @@ export default function ContactPage() {
       <section className="section-padding bg-slate-50">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeading
-            title="Frequently Asked Questions"
-            subtitle="Find answers to common questions about our courses and services."
+            title={t("contact.faqTitle")}
+            subtitle={t("contact.faqSubtitle")}
           />
 
           <div className="space-y-4">

@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslation } from "@/lib/i18nContext";
-
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { GraduationCap, MapPin, Phone, Mail } from "lucide-react";
 
@@ -46,6 +46,11 @@ const footerLinks = {
 
 export default function Footer() {
   const { t } = useTranslation();
+  const pathname = usePathname();
+
+  if (pathname.startsWith("/admin")) {
+    return null;
+  }
 
   return (
     <footer className="bg-slate-900 text-slate-300">
