@@ -12,9 +12,7 @@ export async function POST(req: Request) {
     
     if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const secret = new TextEncoder().encode(process.env.JWT_SECRET || "fallback_secret");
-    const { payload } = await jwt.jwtVerify(token, secret);
-    const studentId = payload.id as number;
+    const studentId = parseInt(token);
 
     const { testId } = await req.json();
 
