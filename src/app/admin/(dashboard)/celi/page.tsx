@@ -71,8 +71,7 @@ export default function AdminCELI() {
         <h3 className="font-bold text-slate-800 mb-4">Add New Exam Date</h3>
         <form onSubmit={handleCreate} className="flex gap-4">
           <input 
-            type="text" 
-            placeholder="e.g. October 15, 2026" 
+            type="date" 
             value={newDate}
             onChange={(e) => setNewDate(e.target.value)}
             className="flex-1 px-4 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-italy-green/20"
