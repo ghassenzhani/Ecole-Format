@@ -21,6 +21,7 @@ export default function Navbar() {
     { href: "/", label: t("nav.home") },
     { href: "/courses", label: t("nav.courses") },
     { href: "/study-in-italy", label: t("nav.studyInItaly") },
+    { href: "/blog", label: "Blog" },
     { href: "/about", label: t("nav.aboutUs") },
     { href: "/contact", label: t("nav.contact") },
   ];
