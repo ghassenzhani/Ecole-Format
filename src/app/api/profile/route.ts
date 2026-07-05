@@ -44,6 +44,8 @@ export async function GET(req: Request) {
     .innerJoin(celiTests, eq(celiEnrollments.testId, celiTests.id))
     .where(eq(celiEnrollments.studentId, studentId));
 
+    const docs = await db.select().from(studentDocuments).where(eq(studentDocuments.studentId, studentId));
+
     return NextResponse.json({
       student: {
         id: studentInfo.id,
@@ -52,7 +54,8 @@ export async function GET(req: Request) {
         phone: studentInfo.phone,
       },
       courses: cEnrollments,
-      celiTests: tEnrollments
+      celiTests: tEnrollments,
+      documents: docs
     });
   } catch (error) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

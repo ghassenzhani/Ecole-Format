@@ -136,6 +136,18 @@ export default function AdminCourses() {
               </div>
             </div>
 
+            {course.waitlistCount > 0 && (
+              <div className="mt-6 bg-amber-50 border border-amber-200 rounded-xl p-4 flex justify-between items-center">
+                <div className="flex items-center gap-3">
+                  <Users className="w-5 h-5 text-amber-500" />
+                  <span className="font-semibold text-amber-800">Waitlist Alert</span>
+                </div>
+                <div className="text-sm text-amber-700 font-medium">
+                  {course.waitlistCount} student(s) waiting for an open spot
+                </div>
+              </div>
+            )}
+
           </div>
         ))}
       </div>

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Settings, MessageSquare, LayoutDashboard, Mail, Users, BookOpen, Award, HelpCircle, Inbox, LogOut } from 'lucide-react';
+import { Settings, MessageSquare, LayoutDashboard, Mail, Users, BookOpen, Award, HelpCircle, Inbox, LogOut, FileText } from 'lucide-react';
 import { ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -15,6 +15,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     { href: "/admin/chat", icon: MessageSquare, label: "Live Chat" },
     { href: "/admin/courses", icon: BookOpen, label: "Courses" },
     { href: "/admin/celi", icon: Award, label: "CELI Exams" },
+    { href: "/admin/blog", icon: FileText, label: "Blog" },
     { href: "/admin/users", icon: Users, label: "Students" },
     { href: "/admin/contacts", icon: Inbox, label: "Messages" },
     { href: "/admin/faq", icon: HelpCircle, label: "Bot FAQ" },

@@ -27,10 +27,15 @@ export async function GET() {
         .from(courseEnrollments)
         .where(sql`${courseEnrollments.courseId} = ${c.id} AND ${courseEnrollments.mode} = 'online'`);
 
+      const waitlistCountResult = await db.select({ count: sql<number>`count(*)` })
+        .from(courseWaitlists)
+        .where(sql`${courseWaitlists.courseId} = ${c.id}`);
+
       return {
         ...c,
         currentInPerson: inPersonCount[0].count,
-        currentOnline: onlineCount[0].count
+        currentOnline: onlineCount[0].count,
+        waitlistCount: waitlistCountResult[0].count
       };
     }));
 

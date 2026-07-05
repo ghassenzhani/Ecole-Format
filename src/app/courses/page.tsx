@@ -143,6 +143,38 @@ export default function CoursesPage() {
     setIsSubmitting(false);
   };
 
+  const [waitlistCourse, setWaitlistCourse] = useState<any>(null);
+
+  const handleWaitlistClick = (course: any) => {
+    if (!student) {
+      openAuthModal();
+      return;
+    }
+    setWaitlistCourse(course);
+    setErrorMsg("");
+  };
+
+  const submitWaitlist = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setErrorMsg("");
+    try {
+      const res = await fetch("/api/courses/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ courseId: waitlistCourse.id, mode: enrollMode })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      
+      setWaitlistCourse(null);
+      alert("You have successfully joined the waitlist!");
+    } catch (err: any) {
+      setErrorMsg(err.message || "Failed to join waitlist");
+    }
+    setIsSubmitting(false);
+  };
+
   return (
     <div className="pt-20 relative">
       {/* Course Enrollment Modal */}
@@ -191,6 +223,36 @@ export default function CoursesPage() {
               <form onSubmit={submitCeliEnrollment} className="space-y-4">
                 <button type="submit" disabled={isSubmitting} className="w-full py-3 bg-italy-red text-white font-semibold rounded-xl shadow-lg hover:bg-red-700 flex justify-center">
                   {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : "Confirm Inscription"}
+                </button>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Waitlist Modal */}
+      <AnimatePresence>
+        {waitlistCourse && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden relative p-8">
+              <button onClick={() => setWaitlistCourse(null)} className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 rounded-full">
+                <X className="w-5 h-5" />
+              </button>
+              <h3 className="text-2xl font-bold text-slate-800 mb-2">Join Waitlist</h3>
+              <p className="text-sm text-slate-500 mb-6">{waitlistCourse.title} is currently full. Join the waitlist to be notified if a spot opens up.</p>
+              
+              {errorMsg && <div className="mb-4 p-3 bg-red-50 text-red-600 text-sm rounded-xl">{errorMsg}</div>}
+
+              <form onSubmit={submitWaitlist} className="space-y-4">
+                <div>
+                  <label className="text-xs font-medium text-slate-600 mb-1.5 block">Preferred Learning Mode</label>
+                  <select value={enrollMode} onChange={e => setEnrollMode(e.target.value)} className="w-full px-4 py-2.5 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-italy-green/20">
+                    <option value="in-person">In-Person at our center</option>
+                    <option value="online">Online (Zoom/Meet)</option>
+                  </select>
+                </div>
+                <button type="submit" disabled={isSubmitting} className="w-full py-3 bg-slate-900 text-white font-semibold rounded-xl shadow-lg hover:bg-slate-800 flex justify-center">
+                  {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : "Join Waitlist"}
                 </button>
               </form>
             </motion.div>
@@ -262,7 +324,9 @@ export default function CoursesPage() {
                         Enroll Now <ArrowRight className="w-4 h-4" />
                       </button>
                     ) : (
-                      <span className="px-4 py-2 bg-red-100 text-red-600 text-sm font-semibold rounded-xl">Closed / Full</span>
+                      <button onClick={() => handleWaitlistClick(course)} className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-200 text-slate-700 text-sm font-semibold rounded-xl hover:bg-slate-300 transition-colors">
+                        Join Waitlist
+                      </button>
                     )}
                   </div>
                 </motion.div>

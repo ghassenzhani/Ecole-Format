@@ -152,6 +152,56 @@ export default function ProfilePage() {
               )}
             </div>
 
+            {/* Documents Section */}
+            <div className="bg-white rounded-3xl p-6 md:p-8 shadow-xl shadow-slate-200/50 border border-slate-100">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                  <FileText className="w-5 h-5 text-blue-500" />
+                  My Documents
+                </h2>
+                <span className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs font-bold">
+                  {profileData.documents?.length || 0}
+                </span>
+              </div>
+              
+              <div className="mb-6">
+                <label className="block w-full cursor-pointer text-center px-4 py-8 border-2 border-dashed border-slate-200 hover:border-blue-400 hover:bg-blue-50 transition-colors rounded-2xl">
+                  <span className="text-sm font-semibold text-blue-600">Click to upload a new document</span>
+                  <p className="text-xs text-slate-400 mt-1">PDF, JPG, PNG (Max 5MB)</p>
+                  <input type="file" className="hidden" onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    
+                    const formData = new FormData();
+                    formData.append("file", file);
+                    await fetch("/api/profile/documents", { method: "POST", body: formData });
+                    window.location.reload();
+                  }} />
+                </label>
+              </div>
+
+              {!profileData.documents || profileData.documents.length === 0 ? (
+                <div className="text-center py-4 text-slate-500 text-sm border border-dashed border-slate-200 rounded-2xl bg-slate-50">No documents uploaded yet.</div>
+              ) : (
+                <div className="space-y-3">
+                  {profileData.documents.map((doc: any) => (
+                    <div key={doc.id} className="flex items-center justify-between p-4 rounded-xl border border-slate-100 bg-slate-50">
+                      <a href={doc.fileUrl} target="_blank" rel="noreferrer" className="text-sm font-medium text-slate-700 hover:text-blue-600 hover:underline">
+                        {doc.fileName}
+                      </a>
+                      <span className={`px-2 py-1 rounded-md text-xs font-bold ${
+                        doc.status === 'approved' ? 'bg-emerald-100 text-emerald-700' :
+                        doc.status === 'rejected' ? 'bg-red-100 text-red-700' :
+                        'bg-amber-100 text-amber-700'
+                      }`}>
+                        {doc.status.toUpperCase()}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
           </div>
         </div>
       </div>

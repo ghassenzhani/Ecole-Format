@@ -32,11 +32,15 @@ export async function POST(request: Request) {
       passwordHash,
     }).returning();
 
+    // Send Welcome Email
+    await sendEmail(email, "Welcome to Format - The Italian School", `Ciao ${name}!\n\nWelcome to Format. Your account has been created successfully. You can now explore and enroll in our Italian courses and CELI exams.\n\nBest regards,\nThe Format Team`);
+
     // Set cookie
     const response = NextResponse.json({ success: true, student: { id: newStudent.id, name: newStudent.name, email: newStudent.email } });
     
     // In a real app we'd sign a JWT. Here we just store the ID securely (showcase app)
-    response.cookies.set("student_token", newStudent.id.toString(), {
+    const cookieStore = await cookies();
+    cookieStore.set("student_token", newStudent.id.toString(), {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",

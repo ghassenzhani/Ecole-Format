@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, User, Phone, Mail, BookOpen, Award, Loader2, Calendar } from "lucide-react";
+import { ArrowLeft, User, Phone, Mail, BookOpen, Award, Loader2, Calendar, FileText } from "lucide-react";
 import Link from "next/link";
 
 import { use } from "react";
@@ -24,7 +24,7 @@ export default function UserProfile({ params }: { params: Promise<{ id: string }
   if (loading) return <div className="p-8 flex justify-center"><Loader2 className="w-8 h-8 animate-spin text-slate-400" /></div>;
   if (!profile || profile.error) return <div className="p-8 text-center text-red-500">User not found</div>;
 
-  const { student, courses, celiTests } = profile;
+  const { student, courses, celiTests, documents } = profile;
 
   return (
     <div className="space-y-6">
@@ -113,6 +113,56 @@ export default function UserProfile({ params }: { params: Promise<{ id: string }
                       </div>
                     </div>
                     <span className="px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-xs font-bold">{test.status.toUpperCase()}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Documents */}
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="font-bold text-slate-800 flex items-center gap-2">
+                <FileText className="w-5 h-5 text-blue-500" />
+                Uploaded Documents
+              </h3>
+              <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-xs font-bold">{documents?.length || 0}</span>
+            </div>
+
+            {!documents || documents.length === 0 ? (
+              <p className="text-sm text-slate-500 text-center py-4 bg-slate-50 rounded-xl">No documents uploaded.</p>
+            ) : (
+              <div className="space-y-3">
+                {documents.map((doc: any) => (
+                  <div key={doc.id} className="flex justify-between items-center p-4 border border-slate-100 rounded-xl bg-slate-50">
+                    <div className="flex items-center gap-3">
+                      <FileText className="w-4 h-4 text-slate-400" />
+                      <div>
+                        <a href={doc.fileUrl} target="_blank" rel="noreferrer" className="font-bold text-slate-800 hover:text-blue-600 hover:underline">{doc.fileName}</a>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <select 
+                        value={doc.status}
+                        onChange={async (e) => {
+                          await fetch(`/api/admin/documents/${doc.id}`, {
+                            method: "PATCH",
+                            headers: {"Content-Type": "application/json"},
+                            body: JSON.stringify({ status: e.target.value })
+                          });
+                          window.location.reload();
+                        }}
+                        className={`text-xs font-bold px-2 py-1 rounded-md border-0 focus:ring-2 focus:ring-slate-200 ${
+                          doc.status === 'approved' ? 'bg-emerald-100 text-emerald-700' :
+                          doc.status === 'rejected' ? 'bg-red-100 text-red-700' :
+                          'bg-amber-100 text-amber-700'
+                        }`}
+                      >
+                        <option value="pending">PENDING</option>
+                        <option value="approved">APPROVED</option>
+                        <option value="rejected">REJECTED</option>
+                      </select>
+                    </div>
                   </div>
                 ))}
               </div>

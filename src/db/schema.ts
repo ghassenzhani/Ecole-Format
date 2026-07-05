@@ -77,3 +77,30 @@ export const celiEnrollments = pgTable("celi_enrollments", {
   status: varchar("status", { length: 50 }).default("enrolled").notNull(),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
 });
+
+export const studentDocuments = pgTable("student_documents", {
+  id: serial("id").primaryKey(),
+  studentId: integer("student_id").references(() => students.id, { onDelete: "cascade" }).notNull(),
+  fileName: varchar("file_name", { length: 255 }).notNull(),
+  fileUrl: varchar("file_url", { length: 255 }).notNull(),
+  status: varchar("status", { length: 50 }).default("pending").notNull(), // 'pending' | 'approved' | 'rejected'
+  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+});
+
+export const courseWaitlists = pgTable("course_waitlists", {
+  id: serial("id").primaryKey(),
+  studentId: integer("student_id").references(() => students.id, { onDelete: "cascade" }).notNull(),
+  courseId: integer("course_id").references(() => courses.id, { onDelete: "cascade" }).notNull(),
+  mode: varchar("mode", { length: 50 }).notNull(),
+  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+});
+
+export const blogPosts = pgTable("blog_posts", {
+  id: serial("id").primaryKey(),
+  title: varchar("title", { length: 255 }).notNull(),
+  slug: varchar("slug", { length: 255 }).notNull().unique(),
+  content: text("content").notNull(),
+  imageUrl: varchar("image_url", { length: 255 }),
+  isPublished: integer("is_published").default(0).notNull(), // 0 = draft, 1 = published
+  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+});

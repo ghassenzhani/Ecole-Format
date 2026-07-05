@@ -48,10 +48,13 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
     .innerJoin(celiTests, eq(celiEnrollments.testId, celiTests.id))
     .where(eq(celiEnrollments.studentId, studentId));
 
+    const docs = await db.select().from(studentDocuments).where(eq(studentDocuments.studentId, studentId));
+
     return NextResponse.json({
       student: studentInfo,
       courses: cEnrollments,
-      celiTests: tEnrollments
+      celiTests: tEnrollments,
+      documents: docs
     });
   } catch (error) {
     return NextResponse.json({ error: "Failed to fetch" }, { status: 500 });
