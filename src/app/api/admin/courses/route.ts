@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
-import { courses, courseEnrollments } from "@/db/schema";
+import { courses, courseEnrollments, courseWaitlists } from "@/db/schema";
 import { eq, sql } from "drizzle-orm";
 import { cookies } from "next/headers";
 import * as jwt from "jose";
