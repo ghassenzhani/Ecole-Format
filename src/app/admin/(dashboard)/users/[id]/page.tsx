@@ -5,18 +5,21 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, User, Phone, Mail, BookOpen, Award, Loader2, Calendar } from "lucide-react";
 import Link from "next/link";
 
-export default function UserProfile({ params }: { params: { id: string } }) {
+import { use } from "react";
+
+export default function UserProfile({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = use(params);
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`/api/admin/users/${params.id}`)
+    fetch(`/api/admin/users/${resolvedParams.id}`)
       .then(res => res.json())
       .then(data => {
         setProfile(data);
         setLoading(false);
       });
-  }, [params.id]);
+  }, [resolvedParams.id]);
 
   if (loading) return <div className="p-8 flex justify-center"><Loader2 className="w-8 h-8 animate-spin text-slate-400" /></div>;
   if (!profile || profile.error) return <div className="p-8 text-center text-red-500">User not found</div>;

@@ -18,11 +18,12 @@ async function verifyAdmin() {
   }
 }
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   if (!(await verifyAdmin())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
-    const studentId = parseInt(params.id);
+    const resolvedParams = await params;
+    const studentId = parseInt(resolvedParams.id);
 
     const studentRecord = await db.select().from(students).where(eq(students.id, studentId)).limit(1);
     
