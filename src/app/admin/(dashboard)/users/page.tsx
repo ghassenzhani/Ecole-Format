@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Users, Search, MessageSquarePlus } from "lucide-react";
+import { Users, Search, MessageSquarePlus, UserCircle } from "lucide-react";
+import Link from "next/link";
 
 export default function UsersPage() {
   const [users, setUsers] = useState<any[]>([]);
@@ -75,7 +76,14 @@ export default function UsersPage() {
                     <td className="px-6 py-4 font-medium text-slate-900">{user.name}</td>
                     <td className="px-6 py-4 text-slate-600">{user.email}</td>
                     <td className="px-6 py-4 text-slate-500">{new Date(user.createdAt).toLocaleDateString()}</td>
-                    <td className="px-6 py-4 text-right">
+                    <td className="px-6 py-4 text-right flex justify-end gap-2">
+                      <Link 
+                        href={`/admin/users/${user.id}`}
+                        className="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-100 text-slate-600 hover:bg-slate-200 rounded-lg transition-colors text-xs font-semibold"
+                      >
+                        <UserCircle className="w-3.5 h-3.5" />
+                        Profile
+                      </Link>
                       <button 
                         onClick={() => startChat(user)}
                         className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-lg transition-colors text-xs font-semibold"

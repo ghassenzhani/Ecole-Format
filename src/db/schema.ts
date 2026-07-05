@@ -4,6 +4,7 @@ export const students = pgTable("students", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
   email: varchar("email", { length: 255 }).notNull().unique(),
+  phone: varchar("phone", { length: 50 }),
   passwordHash: varchar("password_hash", { length: 255 }).notNull(),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
 });
@@ -40,5 +41,39 @@ export const botFaq = pgTable("bot_faq", {
   id: serial("id").primaryKey(),
   question: text("question").notNull(),
   answer: text("answer").notNull(),
+  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+});
+
+export const courses = pgTable("courses", {
+  id: serial("id").primaryKey(),
+  title: varchar("title", { length: 255 }).notNull(),
+  level: varchar("level", { length: 50 }).notNull(),
+  maxInPerson: integer("max_in_person").default(50).notNull(),
+  maxOnline: integer("max_online").default(50).notNull(),
+  isOpen: integer("is_open").default(1).notNull(), // 1 true, 0 false (SQLite compatible if needed, but we use pg, let's stick to boolean or smallint)
+  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+});
+
+export const courseEnrollments = pgTable("course_enrollments", {
+  id: serial("id").primaryKey(),
+  studentId: integer("student_id").references(() => students.id, { onDelete: "cascade" }).notNull(),
+  courseId: integer("course_id").references(() => courses.id, { onDelete: "cascade" }).notNull(),
+  mode: varchar("mode", { length: 50 }).notNull(), // 'online' | 'in-person'
+  status: varchar("status", { length: 50 }).default("enrolled").notNull(),
+  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+});
+
+export const celiTests = pgTable("celi_tests", {
+  id: serial("id").primaryKey(),
+  date: varchar("date", { length: 255 }).notNull(),
+  isOpen: integer("is_open").default(1).notNull(),
+  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+});
+
+export const celiEnrollments = pgTable("celi_enrollments", {
+  id: serial("id").primaryKey(),
+  studentId: integer("student_id").references(() => students.id, { onDelete: "cascade" }).notNull(),
+  testId: integer("test_id").references(() => celiTests.id, { onDelete: "cascade" }).notNull(),
+  status: varchar("status", { length: 50 }).default("enrolled").notNull(),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
 });

@@ -129,6 +129,9 @@ export default function Navbar() {
                     <p className="text-xs text-slate-500">Signed in as</p>
                     <p className="text-sm font-semibold text-slate-900 truncate">{student.name}</p>
                   </div>
+                  <Link href="/profile" className="block w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors">
+                    My Profile
+                  </Link>
                   <button onClick={logout} className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">
                     Log out
                   </button>
@@ -193,9 +196,14 @@ export default function Navbar() {
                 {t("nav.freeConsultation")}
               </Link>
               {student ? (
-                <button onClick={() => { logout(); setIsOpen(false); }} className="mt-2 px-4 py-3 bg-slate-100 text-slate-700 text-sm font-semibold rounded-xl text-center">
-                  Log out ({student.name})
-                </button>
+                <div className="flex flex-col gap-2 mt-2">
+                  <Link href="/profile" onClick={() => setIsOpen(false)} className="px-4 py-3 bg-emerald-50 text-emerald-700 text-sm font-semibold rounded-xl text-center">
+                    My Profile
+                  </Link>
+                  <button onClick={() => { logout(); setIsOpen(false); }} className="px-4 py-3 bg-slate-100 text-slate-700 text-sm font-semibold rounded-xl text-center">
+                    Log out ({student.name})
+                  </button>
+                </div>
               ) : (
                 <button onClick={() => { openAuthModal(); setIsOpen(false); }} className="mt-2 px-4 py-3 bg-slate-100 text-slate-700 text-sm font-semibold rounded-xl text-center flex items-center justify-center gap-2">
                   <LogIn className="w-4 h-4" />
